@@ -1,0 +1,31 @@
+
+name: Extract RemoteBuzz Project
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract project ZIP
+        run: |
+          mkdir temp
+          unzip -o RemoteBuzz-Android-Project.zip -d temp
+          cp -r temp/RemoteBuzz/. .
+          rm -rf temp
+          rm -f RemoteBuzz-Android-Project.zip
+
+      - name: Save extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Add RemoteBuzz Android project" || echo "No changes"
+          git push
